@@ -1,6 +1,9 @@
 from obrazek import vykresleni   # vykreslení šibenice pomocí importu vlastního modulu
 from slova import vyber_slova   # výběr slova ze samostatného modulu
 
+vyhra = 0
+prohra = 0
+
 def generuj_slovo():
     slovo = vyber_slova() # počítač ze seznamu vybere náhodné slovo (import vlastního modulu)
     slovo = slovo.lower()
@@ -34,12 +37,14 @@ def pouzite(tip, pouzite_tipy):
         pouzite_tipy.append(tip)  # doplnění tipu do seznamu použitých typů (bez ohledu na jeho úspěšnost)
     return pouzite_tipy
 
-def konec(slovo, hadanka, vyhra, prohra):
+def konec(slovo, hadanka):
     if "_" not in hadanka:   # celé slovo uhádnuté, vyhrál jsi
-        vyhra.append(1)
+        global vyhra
+        vyhra = vyhra + 1
         print("Vyhrál jsi, gratuluji.")
     else:
-        prohra.append(1)
+        global prohra
+        prohra = prohra + 1
         print("Prohrál jsi. Hledané slovo bylo:",slovo)
     return vyhra, prohra
 
@@ -64,15 +69,14 @@ def sibenice():
             print(vykresleni(neuspesne_pokusy)) 
             print(hadanka)        
         pouzite(tip, pouzite_tipy)
-    konec(slovo, hadanka, vyhra, prohra)
+    konec(slovo, hadanka)
 
 # MAIN funkce
-vyhra = []   # statistika výher
-prohra = []   # statistika proher
+
 while True:
     sibenice()
     pokracovani = input("Chceš pokračovat v další hře?(ano/ne)") 
     if pokracovani == "ne":
         print("Děkuji za hru.")
-        print("Celková statistika tvé hry je", len(vyhra), "výher a", len(prohra), "proher z celkových", len(vyhra)+len(prohra), "her.")
+        print("Celková statistika tvé hry je", vyhra, "výher a", prohra, "proher z celkových", vyhra + prohra, "her.")
         break
