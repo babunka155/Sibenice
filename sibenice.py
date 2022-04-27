@@ -1,9 +1,6 @@
 from obrazek import vykresleni   # vykreslení šibenice pomocí importu vlastního modulu
 from slova import vyber_slova   # výběr slova ze samostatného modulu
 
-vyhra = 0
-prohra = 0
-
 def generuj_slovo():
     slovo = vyber_slova() # počítač ze seznamu vybere náhodné slovo (import vlastního modulu)
     slovo = slovo.lower()
@@ -14,12 +11,14 @@ def nacti_pismeno(pouzite_tipy):
     while True:
         tip = input("Jaké tipuješ písmeno? ")
         tip = tip.lower()
-        if tip in pouzite_tipy:   # kontrola, aby nebylo znovu zadáno písmeno, které už jednou zadané bylo
-            print("Písmeno už bylo jednou zadané.")
-        elif len(tip)!=1:   # aby šlo zadat přesně jeden znak
-            print("Zadal jsi jiný počet znaků, než je povolený, zkus to znovu.")
-        elif tip not in "aábcčdeéěfghiíjklmnoópqrřsštuůúvwxyýzž":   # aby šlo zadat pouze písmeno, jiným zpsobem by to neošetřilo české háčky??
-            print("Nezadal jsi písmeno, ale jiný znak (číslice, interpunkční znaménko, atd.), zkus to znovu.")
+        if tip in pouzite_tipy or len(tip)!=1 or tip not in "aábcčdeéěfghiíjklmnoópqrřsštuůúvwxyýzž":
+            if tip in pouzite_tipy:   # kontrola, aby nebylo znovu zadáno písmeno, které už jednou zadané bylo
+                print("Písmeno už bylo jednou zadané.")
+            if len(tip)!=1:   # aby šlo zadat přesně jeden znak
+                print("Zadal jsi jiný počet znaků, než je povolený, zkus to znovu.")
+            for znak in tip:
+                if znak not in "aábcčdeéěfghiíjklmnoópqrřsštuůúvwxyýzž":   # aby šlo zadat pouze písmeno, jiným zpsobem by to neošetřilo české háčky??  
+                    print(znak, "- Nezadal jsi písmeno, ale jiný znak (číslice, interpunkční znaménko, atd.), zkus to znovu.")
         else:
             break
     return tip
@@ -28,7 +27,10 @@ def zamen_pismeno(slovo, hadanka, tip):
     poradi = 0
     for i in range(slovo.count(tip)):   # pokud hádané písmenko bude ve slově víckrát, tak aby se vyplnilo na všech místech
         poradi = slovo.index(tip, poradi)
-        hadanka = hadanka[:poradi] + tip + hadanka[poradi+1:]
+        if poradi < (len(slovo)-1):
+            hadanka = hadanka[:poradi] + tip + hadanka[poradi+1:]
+        else:
+            hadanka = hadanka[:poradi] + tip   # případ, kdy zaměním poslední písmenko slova, aby druhá hranatá závorka neodkazovala mimo délku slova
         poradi = poradi + 1
     return hadanka
 
@@ -72,7 +74,8 @@ def sibenice():
     konec(slovo, hadanka)
 
 # MAIN funkce
-
+vyhra = 0
+prohra = 0
 while True:
     sibenice()
     pokracovani = input("Chceš pokračovat v další hře?(ano/ne)") 
